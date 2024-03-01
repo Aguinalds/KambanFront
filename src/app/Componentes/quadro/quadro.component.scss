@@ -1,0 +1,15 @@
+.kanban-board {
+    display: flex;
+    overflow-x: auto; /* Ativa o scroll horizontal se necessário */
+    overflow-y: auto; /* Ativa o scroll vertical se necessário */
+    width: 100%; /* Define a largura do quadro como 100% da largura da tela */
+    height: 88vh; /* Define a altura do quadro como 100% da altura da janela do navegador */
+  }
+  
+  
+  
+  .kanban-column {
+    flex-shrink: 0; /* Impede que as colunas encolham */
+    flex-basis: auto; /* Define a largura base das colunas como automática */
+  }
+  
