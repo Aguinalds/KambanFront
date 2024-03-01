@@ -1,0 +1,7 @@
+{
+  "name": "KambanFront",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
