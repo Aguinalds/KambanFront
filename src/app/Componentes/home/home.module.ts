@@ -8,6 +8,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { QuadroModule } from '../quadro/quadro.module';
 import { QuadroComponent } from '../quadro/quadro.component';
+import { ModaltarefaComponent } from '../modaltarefa/modaltarefa.component';
 
 
 @NgModule({
@@ -19,6 +20,6 @@ import { QuadroComponent } from '../quadro/quadro.component';
     HomePageRoutingModule, 
     QuadroModule
   ],
-  declarations: [HomePage, NavbarComponent, QuadroComponent]
+  declarations: [HomePage, NavbarComponent, QuadroComponent, ModaltarefaComponent]
 })
 export class HomePageModule {}

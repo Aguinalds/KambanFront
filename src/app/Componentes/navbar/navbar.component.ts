@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedService } from '../../Service/SharedService';
+import { ModalController, NavController } from '@ionic/angular';
+import { ModaltarefaComponent } from '../modaltarefa/modaltarefa.component';
 
 
 @Component({
@@ -9,7 +11,7 @@ import { SharedService } from '../../Service/SharedService';
 })
 export class NavbarComponent  implements OnInit {
 
-  constructor(private sharedService: SharedService) { }
+  constructor(private sharedService: SharedService, private modalController: ModalController) { }
 
   onNovaTarefaClick() {
     this.sharedService.adicionarNovaColuna();
@@ -18,6 +20,8 @@ export class NavbarComponent  implements OnInit {
   onNovoCardClick() {
     this.sharedService.adicionarNovoCard();
   }
+
+  
 
   ngOnInit() {}
 
