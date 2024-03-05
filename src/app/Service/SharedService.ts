@@ -8,14 +8,16 @@ export class SharedService {
   private novaColunaSubject = new BehaviorSubject<boolean>(false);
   novaColuna$ = this.novaColunaSubject.asObservable();
 
-  private novoCardSubject = new BehaviorSubject<boolean>(false);
-  novoCard$ = this.novoCardSubject.asObservable();
+  private nomeCardSubject = new BehaviorSubject<string>('');
+  novoCard$ = this.nomeCardSubject.asObservable();
+
+
 
   adicionarNovaColuna() {
     this.novaColunaSubject.next(true);
   }
 
-  adicionarNovoCard() {
-    this.novoCardSubject.next(true);
+  enviarNomeCard(nome: string) {
+    this.nomeCardSubject.next(nome);
   }
 }

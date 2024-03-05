@@ -1,3 +1,5 @@
 <div class="coluna" [style.height.px]="calcularAlturaColuna()">
-  <app-card *ngFor="let card of card"></app-card>
+  <ng-container *ngIf="card.length > 0">
+    <app-card *ngFor="let cardItem of card" [nome]="cardItem.nome"></app-card>
+  </ng-container>
 </div>

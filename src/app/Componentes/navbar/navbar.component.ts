@@ -17,12 +17,6 @@ export class NavbarComponent  implements OnInit {
     this.sharedService.adicionarNovaColuna();
   }
 
-  onNovoCardClick() {
-    this.sharedService.adicionarNovoCard();
-  }
-
-  
-
   ngOnInit() {}
 
   

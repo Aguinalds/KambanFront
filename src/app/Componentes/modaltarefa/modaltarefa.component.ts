@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { IonModal } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components';
+import { SharedService } from 'src/app/Service/SharedService';
 
 @Component({
   selector: 'app-modaltarefa',
@@ -9,6 +10,9 @@ import { OverlayEventDetail } from '@ionic/core/components';
   styleUrls: ['./modaltarefa.component.scss'],
 })
 export class ModaltarefaComponent {
+
+  
+  constructor(private sharedService: SharedService) {}
 
   @ViewChild(IonModal) modal!: IonModal;
 
@@ -23,6 +27,7 @@ export class ModaltarefaComponent {
 
   confirm() {
     this.modal.dismiss(this.name, 'confirm');
+    this.sharedService.enviarNomeCard(this.name);
   }
 
   onWillDismiss(event: Event) {
