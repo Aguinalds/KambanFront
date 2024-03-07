@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedService } from '../../Service/SharedService';
+import { ColunaService } from 'src/app/Service/Coluna.service';
 
 @Component({
   selector: 'app-quadro',
@@ -8,7 +9,7 @@ import { SharedService } from '../../Service/SharedService';
 })
 export class QuadroComponent  implements OnInit {
 
-  constructor(private sharedService: SharedService) { }
+  constructor(private sharedService: SharedService,private colunaService: ColunaService) { }
 
   ngOnInit() {
     this.sharedService.novaColuna$.subscribe(() => {
@@ -19,8 +20,10 @@ export class QuadroComponent  implements OnInit {
   colunas: { nome: string }[] = [];
 
   adicionarNovaColuna() {
-    const novaColunaNome = `Coluna ${this.colunas.length + 1}`;
+    const novaColunaNome = `Coluna ${this.colunaService.getColunas().length + 1}`;
+    this.colunaService.adicionarColuna({ nome: novaColunaNome });
     this.colunas.push({ nome: novaColunaNome });
   }
+
 
 }

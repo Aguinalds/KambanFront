@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { IonModal } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components';
+import { ColunaService } from 'src/app/Service/Coluna.service';
 import { SharedService } from 'src/app/Service/SharedService';
 
 @Component({
@@ -12,14 +13,18 @@ import { SharedService } from 'src/app/Service/SharedService';
 export class ModaltarefaComponent {
 
   
-  constructor(private sharedService: SharedService) {}
+  constructor(private sharedService: SharedService, private colunaService: ColunaService) {}
 
   @ViewChild(IonModal) modal!: IonModal;
 
-  message = 'This modal example uses triggers to automatically open a modal when the button is clicked.';
   name: string = '';
 
-  ngOnInit() {}
+  colunas: { nome: string }[] = []; // Definindo a propriedade colunas
+
+  ngOnInit() {
+    this.colunas = this.colunaService.getColunas(); // Obtendo as colunas do serviço
+  }
+  
 
   cancel() {
     this.modal.dismiss(null, 'cancel');
@@ -28,13 +33,6 @@ export class ModaltarefaComponent {
   confirm() {
     this.modal.dismiss(this.name, 'confirm');
     this.sharedService.enviarNomeCard(this.name);
-  }
-
-  onWillDismiss(event: Event) {
-    const ev = event as CustomEvent<OverlayEventDetail<string>>;
-    if (ev.detail.role === 'confirm') {
-      this.message = `Hello, ${ev.detail.data}!`;
-    }
   }
 
 }
