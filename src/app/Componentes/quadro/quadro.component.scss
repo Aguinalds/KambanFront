@@ -13,3 +13,73 @@
     flex-basis: auto; /* Define a largura base das colunas como automática */
   }
   
+
+  .coluna {
+    background-color: rgb(160, 87, 255);
+    width: 350px;
+    height: 800px;
+    border-radius: 20px;
+    margin: 35px;
+  }
+  
+.card{
+    overflow-y: auto;
+}
+
+.nome-coluna{
+  padding: 10px;
+  background: rgb(201 159 255);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+
+}
+
+#draggable {
+  background-color: aliceblue;
+  color: black;
+  width: 300px;
+  height: 200px;
+  margin: 20px 0px 0px 20px;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.card{
+  background-color: aliceblue;
+  color: black;
+  width: 300px;
+  height: 200px;
+  margin: 20px 0px 0px 20px;
+  padding: 20px;
+  border-radius: 20px;
+  background-clip: padding-box;
+}
+
+.template{
+  padding: 5px;
+}
+
+.drop-indicator-botton {
+  width: 270px;
+  height: 4px;
+  position: absolute;
+  background-color: rgb(0, 255, 136);
+  opacity: 1;
+  margin-bottom: 5px;
+  margin-left: 35px;
+}
+
+
+.drop-indicator-top {
+  width: 270px;
+  height: 4px;
+  position: absolute;
+  background-color: rgb(0, 255, 136);
+  opacity: 1;
+  margin-bottom: 5px;
+  margin-left: 35px;
+  margin-top: 16px;
+}
+
+
+

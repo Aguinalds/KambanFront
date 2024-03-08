@@ -12,7 +12,7 @@ export class ColunaComponent implements OnInit {
 
   colunas: { nome: string }[] = []; // Definindo a propriedade colunas
 
-  @Input() card: {id: number, nome: string, dragging: boolean }[] = []; // Adicionando a propriedade dragging
+  @Input() cards: {id: number, nome: string, dragging: boolean }[] = []; // Adicionando a propriedade cards
 
   draggedCardIndex: number = -1; // Índice do cartão arrastado
 
@@ -22,12 +22,10 @@ export class ColunaComponent implements OnInit {
 
   hoverIndex: number = -1;
 
-
-  
   onDragStart(event: DragEvent, index: number) {
-    event.dataTransfer?.setData('text/plain', index.toString()); // Passa o índice do cartão sendo arrastado
-    this.draggingIndex = index; // Salva o índice do cartão sendo arrastado
-    this.card[index].dragging = true; // Define a propriedade dragging para true quando o cartão está sendo arrastado
+    event.dataTransfer?.setData('text/plain', index.toString());
+    this.draggingIndex = index;
+    this.cards[index].dragging = true; // Alterando para cards
   }
   
   onDragOver(event: DragEvent, index: number) {
@@ -36,52 +34,42 @@ export class ColunaComponent implements OnInit {
     const mouseY = event.clientY;
     const rect = target.getBoundingClientRect();
     const offset = mouseY - rect.top;
-    const threshold = rect.height / 2; // Threshold para determinar se o mouse está na metade superior ou inferior do card
-  
-    // Calcular o índice do card com base na posição do mouse
+    const threshold = rect.height / 2;
+
     if (offset < threshold) {
-      this.hoverIndex = index; // Mouse está na metade superior do card
+      this.hoverIndex = index;
     } else {
-      this.hoverIndex = index + 1; // Mouse está na metade inferior do card
+      this.hoverIndex = index + 1;
     }
-  
-    // Atualize a variável showDropIndicator
+
     this.showDropIndicator = true;
   }
-  
-  
-  
-  
   
   onDrop(event: DragEvent, droppedIndex: number) {
     event.preventDefault();
     if (this.draggingIndex !== -1 && droppedIndex !== -1) {
-      const draggedCard = this.card[this.draggingIndex];
-      this.card.splice(this.draggingIndex, 1);
-      this.card.splice(droppedIndex, 0, draggedCard);
+      const draggedCard = this.cards[this.draggingIndex]; // Alterando para cards
+      this.cards.splice(this.draggingIndex, 1); // Alterando para cards
+      this.cards.splice(droppedIndex, 0, draggedCard); // Alterando para cards
     }
     this.draggingIndex = -1;
     this.resetDragging();
-    this.showDropIndicator = false; // Limpa a linha indicadora após o drop
+    this.showDropIndicator = false;
   }
-  
   
   resetDragging() {
-    // Reseta a propriedade dragging para false em todos os cartões
-    this.card.forEach(item => item.dragging = false);
+    this.cards.forEach(item => item.dragging = false); // Alterando para cards
   }
   
-  
-
   ngOnInit() {
     this.sharedService.novoCard$.subscribe((nomeCard) => {
       this.adicionarNovoCard(nomeCard);
     });
-    this.colunas = this.colunaService.getColunas(); // Obtendo as colunas do serviço
+    this.colunas = this.colunaService.getColunas();
   }
 
   adicionarNovoCard(nome: string) {
-    this.card = [
+    this.cards = [ // Alterando para cards
       {id: 0, nome: 'Card 1', dragging: false },
       {id: 1, nome: 'Card 2', dragging: false },
       {id: 2, nome: 'Card 3', dragging: false }
@@ -89,11 +77,11 @@ export class ColunaComponent implements OnInit {
   }
 
   calcularAlturaColuna(): number {
-    if (this.card.length <= 3) {
-      return 800; // Altura padrão para um único cartão
+    if (this.cards.length <= 3) { // Alterando para cards
+      return 800;
     }
     const alturaCartao = 240;
     const margemExtra = 35;
-    return (this.card.length * alturaCartao) + (this.card.length - 1) * margemExtra;
+    return (this.cards.length * alturaCartao) + (this.cards.length - 1) * margemExtra; // Alterando para cards
   }
 }

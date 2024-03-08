@@ -1,4 +1,23 @@
 <div class="kanban-board">
-    <app-coluna *ngFor="let coluna of colunas" class="kanban-column"></app-coluna>
-</div>
+    <div class="coluna" *ngFor="let coluna of colunas">
+      <p class="nome-coluna">{{coluna.nome}}</p>
+      <div class="template">
+        <!-- Restante do código dos cards -->
+        <ng-container *ngFor="let cardItem of coluna.cards; let i = index">
+          <div class="drop-indicator-top" *ngIf="showDropIndicator && i === hoverIndex"></div>
+          <div class="card" draggable="true" 
+               [ngClass]="{ 'dragging': cardItem.dragging }"
+               (dragstart)="onDragStart($event, i)" 
+               (dragover)="onDragOver($event, i)" 
+               (drop)="onDrop($event, i)"
+               [attr.data-card-index]="i">
+            {{cardItem.nome}}
+          </div>
+        </ng-container>
+        <!-- Adicione a linha indicadora abaixo dos cards -->
+        <div class="drop-indicator-bottom" *ngIf="showDropIndicator && hoverIndex === coluna.cards.length"></div>
+      </div>
+    </div>
+  </div>
+  <button (click)="adicionarNovaColuna()">NOVA COLUNA</button>
   
