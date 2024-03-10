@@ -1,23 +1,22 @@
+<button (click)="adicionarNovaColuna()">NOVA COLUNA</button>
 <div class="kanban-board">
-    <div class="coluna" *ngFor="let coluna of colunas">
-      <p class="nome-coluna">{{coluna.nome}}</p>
-      <div class="template">
-        <!-- Restante do código dos cards -->
-        <ng-container *ngFor="let cardItem of coluna.cards; let i = index">
-          <div class="drop-indicator-top" *ngIf="showDropIndicator && i === hoverIndex"></div>
-          <div class="card" draggable="true" 
-               [ngClass]="{ 'dragging': cardItem.dragging }"
-               (dragstart)="onDragStart($event, i)" 
-               (dragover)="onDragOver($event, i)" 
-               (drop)="onDrop($event, i)"
-               [attr.data-card-index]="i">
-            {{cardItem.nome}}
-          </div>
-        </ng-container>
-        <!-- Adicione a linha indicadora abaixo dos cards -->
-        <div class="drop-indicator-bottom" *ngIf="showDropIndicator && hoverIndex === coluna.cards.length"></div>
-      </div>
+  <div class="coluna" *ngFor="let coluna of colunas; let colIndex = index">
+    <p class="nome-coluna">{{coluna.nome}}</p>
+    <div class="template">
+      <!-- Restante do código dos cards -->
+      <ng-container *ngFor="let cardItem of coluna.cards; let i = index">
+        <div class="drop-indicator-top" *ngIf="showDropIndicator && i === hoverIndex && existeCard(colIndex)"></div>
+        <div class="card" draggable="true"
+          [ngClass]="{ 'dragging': cardItem.dragging, 'card-vazio': cardItem.id === -1 }"
+          (dragstart)="onDragStart($event, i, colIndex)" (dragover)="onDragOver($event, i)"
+          (drop)="onDrop($event, i, colIndex)" [attr.data-card-index]="i">
+          {{cardItem.nome}}
+        </div>
+      </ng-container>
+      <!-- Adicione a linha indicadora abaixo dos cards -->
+      <div class="drop-indicator-bottom" *ngIf="showDropIndicator && hoverIndex === coluna.cards.length && existeCard(colIndex)"></div>
     </div>
   </div>
-  <button (click)="adicionarNovaColuna()">NOVA COLUNA</button>
-  
+</div>
+
+

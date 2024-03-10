@@ -1,37 +1,44 @@
 .kanban-board {
-    display: flex;
-    overflow-x: auto; /* Ativa o scroll horizontal se necessário */
-    overflow-y: auto; /* Ativa o scroll vertical se necessário */
-    width: 100%; /* Define a largura do quadro como 100% da largura da tela */
-    height: 88vh; /* Define a altura do quadro como 100% da altura da janela do navegador */
-  }
-  
-  
-  
-  .kanban-column {
-    flex-shrink: 0; /* Impede que as colunas encolham */
-    flex-basis: auto; /* Define a largura base das colunas como automática */
-  }
-  
-
-  .coluna {
-    background-color: rgb(160, 87, 255);
-    width: 350px;
-    height: 800px;
-    border-radius: 20px;
-    margin: 35px;
-  }
-  
-.card{
-    overflow-y: auto;
+  display: flex;
+  overflow-x: auto;
+  /* Ativa o scroll horizontal se necessário */
+  overflow-y: auto;
+  /* Ativa o scroll vertical se necessário */
+  width: 100vw;
+  /* Define a largura do quadro como 100% da largura da tela */
+  height: 89.5vh;
+  /* Define a altura do quadro como 100% da altura da janela do navegador */
 }
 
-.nome-coluna{
+
+
+.kanban-column {
+  flex-shrink: 0;
+  /* Impede que as colunas encolham */
+  flex-basis: auto;
+  /* Define a largura base das colunas como automática */
+}
+
+
+.coluna {
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: rgb(160, 87, 255);
+  width: 350px;
+  min-width: 350px;
+  height: 800px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  margin: 35px;
+}
+
+.nome-coluna {
+  margin: 0;
   padding: 10px;
   background: rgb(201 159 255);
   border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-
 }
 
 #draggable {
@@ -44,7 +51,7 @@
   border-radius: 20px;
 }
 
-.card{
+.card {
   background-color: aliceblue;
   color: black;
   width: 300px;
@@ -55,7 +62,13 @@
   background-clip: padding-box;
 }
 
-.template{
+.card-vazio {
+  background-color: rgba(240, 248, 255, 0);
+  width: 300px;
+  height: 800px;
+}
+
+.template {
   padding: 5px;
 }
 
@@ -82,4 +95,19 @@
 }
 
 
+.coluna::-webkit-scrollbar {
+  width: 12px;               /* width of the entire scrollbar */
+}
 
+.coluna::-webkit-scrollbar-track {
+  background: rgb(201 159 255);
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;    /* color of the tracking area */
+      /* color of the tracking area */
+}
+
+.coluna::-webkit-scrollbar-thumb {
+  background-color: rgb(46, 46, 46);    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+  border: 3px solid rgb(201 159 255);;  /* creates padding around scroll thumb */
+}

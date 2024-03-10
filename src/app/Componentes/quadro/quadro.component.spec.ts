@@ -9,8 +9,8 @@ describe('QuadroComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ QuadroComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [QuadroComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(QuadroComponent);
