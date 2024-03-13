@@ -13,9 +13,6 @@ export class NavbarComponent  implements OnInit {
 
   constructor(private sharedService: SharedService, private modalController: ModalController) { }
 
-  onNovaTarefaClick() {
-    this.sharedService.adicionarNovaColuna();
-  }
 
   ngOnInit() {}
 

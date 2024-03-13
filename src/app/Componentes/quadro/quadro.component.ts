@@ -10,7 +10,7 @@ interface Card {
   draggingWithinColumn: boolean;
 }
 
-interface Coluna {
+export interface Coluna {
   nome: string;
   cards: Card[];
 }
@@ -34,12 +34,20 @@ export class QuadroComponent implements OnInit {
   hoverIndex: number = -1;
 
   ngOnInit() {
-    this.sharedService.novoCard$.subscribe((nomeCard) => {
-      this.adicionarNovoCard(nomeCard);
+    this.colunaService.novaColuna$.subscribe(({ nome }) => {
+      this.adicionarNovaColuna(nome);
     });
-
+    this.sharedService.novoCard$.subscribe(({ nome, colunaIndex }) => {
+      this.adicionarNovoCard(nome, colunaIndex);
+    });
+    this.sharedService.atualizarColunas(this.colunas); // Atualize as colunas assim que o componente for inicializado
     // Inicia a verificação automática de colunas vazias
     this.verificarColunasVaziasPeriodicamente();
+  }
+
+  // Depois de atualizar as colunas, chame este método para informar o SharedService
+  atualizarColunas() {
+    this.sharedService.atualizarColunas(this.colunas);
   }
 
   verificarColunasVaziasPeriodicamente() {
@@ -64,38 +72,40 @@ export class QuadroComponent implements OnInit {
       }
     }
   }
-  
+
   existeCard(colunaIndex: number): boolean {
-    return this.colunas[colunaIndex].cards.some(card => card.id != -1);
+    return this.colunas[colunaIndex].cards.some((card) => card.id != -1);
   }
 
-
   existeCardVazio(colunaIndex: number): boolean {
-    return this.colunas[colunaIndex].cards.some(card => card.id === -1);
+    return this.colunas[colunaIndex].cards.some((card) => card.id === -1);
   }
 
   removerTodosCardsVazios() {
     this.colunas.forEach((coluna) => {
-      coluna.cards = coluna.cards.filter(card => card.id !== -1);
+      coluna.cards = coluna.cards.filter((card) => card.id !== -1);
     });
   }
 
-  adicionarNovaColuna() {
-    const novaColunaNome = `Coluna ${this.colunaService.getColunas().length + 1}`;
-    this.colunaService.adicionarColuna({ nome: novaColunaNome });
+  adicionarNovaColuna(nome: string) {
+    if (nome != "") {
+      this.colunas.push({ nome: nome, cards: [] });
 
-    const novoCardVazio = this.criarCardVazio();
-    this.colunas.push({ nome: novaColunaNome, cards: [novoCardVazio] });
-
-    this.atualizarColunasVazias();
+      this.atualizarColunasVazias();
+    }
   }
 
   onDragStart(event: DragEvent, index: number, colunaIndex: number) {
     event.dataTransfer?.setData('text/plain', index.toString());
-    this.draggingIndex = index;
-    this.draggingColumnIndex = colunaIndex;
-    this.colunas[colunaIndex].cards[index].draggingWithinColumn = true;
+    const card = this.colunas[colunaIndex].cards[index];
+    // Verificar se o card não é vazio antes de definir como arrastando
+    if (card.id !== -1) {
+      this.draggingIndex = index;
+      this.draggingColumnIndex = colunaIndex;
+      card.draggingWithinColumn = true;
+    }
   }
+  
 
   onDragOver(event: DragEvent, index: number) {
     event.preventDefault();
@@ -104,32 +114,38 @@ export class QuadroComponent implements OnInit {
     const offset = mouseY - rect.top;
     const threshold = rect.height / 2;
 
-    if (this.colunas[index].cards.length === 0 || index === this.draggingColumnIndex) {
-      this.hoverIndex = 0;
+    if (offset < threshold) {
+      this.hoverIndex = index;
     } else {
-      this.hoverIndex = offset < threshold ? index : index + 1;
+      this.hoverIndex = index + 1;
     }
+
     this.showDropIndicator = true;
   }
 
   onDrop(event: DragEvent, droppedIndex: number, droppedColunaIndex: number) {
     event.preventDefault();
     this.removeEmptyCard(this.draggingColumnIndex);
-    
+
     if (this.draggingIndex !== -1 && droppedIndex !== -1) {
-      const draggedCard = this.colunas[this.draggingColumnIndex].cards.splice(this.draggingIndex, 1)[0];
-      this.colunas[droppedColunaIndex].cards.splice(droppedIndex, 0, draggedCard);
-      this.colunas[droppedColunaIndex].cards.forEach((card, index) => (card.draggingWithinColumn = index === droppedIndex));
+      const draggedCard = this.colunas[this.draggingColumnIndex].cards.splice(
+        this.draggingIndex,
+        1
+      )[0];
+      this.colunas[droppedColunaIndex].cards.splice(
+        droppedIndex,
+        0,
+        draggedCard
+      );
+      this.colunas[droppedColunaIndex].cards.forEach(
+        (card, index) => (card.draggingWithinColumn = index === droppedIndex)
+      );
     }
 
     this.draggingIndex = -1;
     this.draggingColumnIndex = -1;
     this.resetDragging();
     this.showDropIndicator = false;
-
-    if (this.isColumnEmpty(this.draggingColumnIndex)) {
-      this.addEmptyCard(this.draggingColumnIndex);
-    }
   }
 
   adicionarCardVazio(colunaIndex: number) {
@@ -149,63 +165,79 @@ export class QuadroComponent implements OnInit {
   }
 
   resetDragging() {
-    this.colunas.forEach((coluna) => coluna.cards.forEach((card) => (card.dragging = false)));
+    this.colunas.forEach((coluna) =>
+      coluna.cards.forEach((card) => (card.dragging = false))
+    );
   }
 
-  adicionarNovoCard(nome: string) {
-    let algumaColunaVazia = false;
-
-    this.colunas.forEach((coluna) => {
+  adicionarNovoCard(nome: string, colunaIndex?: number) {
+    if (
+      colunaIndex !== undefined &&
+      colunaIndex >= 0 &&
+      colunaIndex < this.colunas.length
+    ) {
+      const coluna = this.colunas[colunaIndex];
       if (coluna.cards.length === 1 && coluna.cards[0].id === -1) {
-        coluna.cards = [{ id: 1, nome, dragging: false, draggingWithinColumn: false }];
-      } else {
-        coluna.cards.push({ id: coluna.cards.length, nome, dragging: false, draggingWithinColumn: false });
+        coluna.cards[0] = {
+          id: 1,
+          nome,
+          dragging: false,
+          draggingWithinColumn: false,
+        };
+      } else if (coluna.cards.length < 3) {
+        coluna.cards.push({
+          id: coluna.cards.length,
+          nome,
+          dragging: false,
+          draggingWithinColumn: false,
+        });
       }
+    }
 
-      if (this.verificarColunaVazia(coluna)) {
-        algumaColunaVazia = true;
-      }
-    });
-
+    // Verificar se há alguma coluna vazia e atualizar
+    const algumaColunaVazia = this.colunas.some((coluna) =>
+      this.verificarColunaVazia(coluna)
+    );
     if (!algumaColunaVazia) {
       this.atualizarColunasVazias();
     }
   }
 
   removerCardVazio(colunaIndex: number) {
-    this.colunas[colunaIndex].cards = this.colunas[colunaIndex].cards.filter(card => card.id !== -1);
-  }
-
-  addEmptyCard(colunaIndex: number) {
-    if (this.colunas[colunaIndex].cards.length === 0) {
-      const novoCardVazio = this.criarCardVazio();
-      this.colunas[colunaIndex].cards.push(novoCardVazio);
-    }
+    this.colunas[colunaIndex].cards = this.colunas[colunaIndex].cards.filter(
+      (card) => card.id !== -1
+    );
   }
 
   removeEmptyCard(colunaIndex: number) {
-    if (this.colunas[colunaIndex].cards.length === 1 && this.colunas[colunaIndex].cards[0].id === -1) {
+    if (
+      this.colunas[colunaIndex].cards.length === 1 &&
+      this.colunas[colunaIndex].cards[0].id === -1
+    ) {
       this.colunas[colunaIndex].cards.splice(0, 1);
     }
   }
 
   atualizarColunasVazias(): void {
-    const algumaColunaVazia = this.colunas.some((coluna) => this.verificarColunaVazia(coluna));
+    const algumaColunaVazia = this.colunas.some((coluna) =>
+      this.verificarColunaVazia(coluna)
+    );
     this.colunasVazias.next(algumaColunaVazia);
   }
 
   verificarColunaVazia(coluna: Coluna): boolean {
-    return (coluna.cards.length === 0 || coluna.cards[0].id === -1);
+    return coluna.cards.length === 0 || coluna.cards[0].id === -1;
   }
 
   calcularAlturaColuna(): number {
-    let totalCards = this.colunas.reduce((total, coluna) => total + coluna.cards.length, 0);
+    let totalCards = this.colunas.reduce(
+      (total, coluna) => total + coluna.cards.length,
+      0
+    );
     const alturaCartao = 240;
     const margemExtra = 35;
-    return totalCards <= 3 ? 800 : totalCards * alturaCartao + (totalCards - 1) * margemExtra;
-  }
-
-  isColumnEmpty(colunaIndex: number): boolean {
-    return this.colunas[colunaIndex].cards.length === 0 || this.colunas[colunaIndex].cards.every(card => card.id === -1);
+    return totalCards <= 3
+      ? 800
+      : totalCards * alturaCartao + (totalCards - 1) * margemExtra;
   }
 }

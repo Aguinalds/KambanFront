@@ -1,15 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ColunaComponent } from '../coluna/coluna.component';
-import { CardComponent } from '../card/card.component';
 
 
 
 @NgModule({
-  declarations: [ColunaComponent, CardComponent],
+  declarations: [],
   imports: [
     CommonModule
   ],
-  exports: [ColunaComponent, CardComponent]
+  exports: []
 })
 export class QuadroModule { }
